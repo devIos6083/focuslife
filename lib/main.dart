@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:focus_life/screen/homescreen.dart';
+import 'package:focus_life/screen/onboarding.dart';
 import 'package:focus_life/screen/splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 
