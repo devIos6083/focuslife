@@ -1,6 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:focus_life/screen/mainscreen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class OnboardingQuestions extends StatefulWidget {
@@ -47,7 +48,7 @@ class _OnboardingQuestionsState extends State<OnboardingQuestions> {
         '🏥 산업재해 / 안전 문제',
         '🤷 아직 문제는 없고, 정보만 보고 싶어요!'
       ]
-    }
+    },
   ];
 
   // 다음 질문으로 넘어가기
@@ -61,8 +62,15 @@ class _OnboardingQuestionsState extends State<OnboardingQuestions> {
         selectedAnswers[currentQuestionIndex] != null) {
       // 모든 질문 완료 후 다음 화면으로 이동
       // TODO: 채팅 화면으로 이동하는 로직 추가
-      print('모든 질문 완료! 채팅 화면으로 이동합니다.');
-      print('선택된 답변: $selectedAnswers');
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MainScreen(
+            userAnswers: selectedAnswers,
+            userName: "강홍규",
+          ),
+        ),
+      );
     }
   }
 

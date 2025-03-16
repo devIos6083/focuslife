@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:focus_life/screen/mainscreen.dart';
 import 'package:focus_life/screen/onboarding.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:focus_life/screen/mainscreen.dart';
 
 class Splash extends StatefulWidget {
   const Splash({super.key});
