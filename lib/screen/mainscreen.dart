@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:focus_life/models/attendant_model.dart';
+import 'package:focus_life/screen/messenger_chat.dart';
 import 'package:focus_life/utils/constant.dart';
 import 'package:focus_life/widgets/attendant_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -92,7 +93,10 @@ class _MainScreenState extends State<MainScreen>
   Widget build(BuildContext context) {
     final List<Widget> pages = [
       _buildHomeTab(),
-      const Center(child: Text('채팅 화면')),
+      MessengerChatScreen(
+        userName: "상담사",
+        userProfileImage: "img/chat_bot.png",
+      ),
       const Center(child: Text('설정 화면')),
     ];
 
