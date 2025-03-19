@@ -1,39 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focus_life/models/attendant_model.dart';
+import 'package:focus_life/provider/navigation_provider.dart';
+import 'package:focus_life/provider/user_provider.dart';
 import 'package:focus_life/utils/constant.dart';
 import 'package:focus_life/widgets/attendant_widget.dart';
 import 'package:focus_life/widgets/guide_banner.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:focus_life/models/user_model.dart';
-
 import 'package:focus_life/widgets/user_info_card.dart';
-
 import 'package:focus_life/widgets/law_tip_widget.dart';
 import 'package:focus_life/widgets/quick_access_button.dart';
 
-class HomeTab extends StatefulWidget {
-  final UserModel user;
-  final Function(int) onNavigateToTab;
+// Provider for the attendance state
+final attendanceProvider =
+    StateNotifierProvider<AttendanceNotifier, AttendanceModel>((ref) {
+  return AttendanceNotifier();
+});
 
-  const HomeTab({
-    super.key,
-    required this.user,
-    required this.onNavigateToTab,
-  });
+class AttendanceNotifier extends StateNotifier<AttendanceModel> {
+  AttendanceNotifier() : super(AttendanceModel());
 
-  @override
-  State<HomeTab> createState() => _HomeTabState();
+  void checkAttendance() {
+    if (!state.isTodayChecked) {
+      state = state.copyWith(
+        count: state.count + 1,
+        isTodayChecked: true,
+      );
+    }
+  }
 }
 
-class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
-  late AttendanceModel _attendanceModel;
+class HomeTabRiverpod extends ConsumerStatefulWidget {
+  const HomeTabRiverpod({super.key});
+
+  @override
+  ConsumerState<HomeTabRiverpod> createState() => _HomeTabRiverpodState();
+}
+
+class _HomeTabRiverpodState extends ConsumerState<HomeTabRiverpod>
+    with SingleTickerProviderStateMixin {
   late AnimationController _checkAnimationController;
 
   @override
   void initState() {
     super.initState();
-    // Initialize with count 0 to fix the problem where it was showing 1 at start
-    _attendanceModel = AttendanceModel(count: 0, isTodayChecked: false);
     _checkAnimationController = AnimationController(
       duration: const Duration(milliseconds: 500),
       vsync: this,
@@ -47,10 +57,8 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
   }
 
   void _checkAttendance() {
-    // This properly increments by 1 now
-    setState(() {
-      _attendanceModel.checkAttendance();
-    });
+    // Update the attendance state using the provider
+    ref.read(attendanceProvider.notifier).checkAttendance();
 
     // Animate the check mark
     _checkAnimationController.forward(from: 0);
@@ -78,6 +86,11 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    // Watch the user provider to get user data
+    final user = ref.watch(userProvider);
+    // Watch the attendance provider to get attendance state
+    final attendance = ref.watch(attendanceProvider);
+
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
@@ -85,13 +98,13 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 사용자 정보 카드
-            UserInfoCard(userModel: widget.user),
+            UserInfoCard(),
 
             const SizedBox(height: 30),
 
             // 출석 체크 섹션
             AttendanceWidget(
-              attendance: _attendanceModel,
+              attendance: attendance,
               onCheckAttendance: _checkAttendance,
               animationController: _checkAnimationController,
             ),
@@ -142,7 +155,8 @@ class _HomeTabState extends State<HomeTab> with SingleTickerProviderStateMixin {
                         icon: Icons.chat_bubble,
                         color: AppColors.accent,
                         onTap: () {
-                          widget.onNavigateToTab(1); // 채팅 탭으로 이동
+                          // Use the navigation provider to navigate to the chat tab
+                          ref.read(navigationProvider.notifier).setTab(1);
                         },
                       ),
                     ),
