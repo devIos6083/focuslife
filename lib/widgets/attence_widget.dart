@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:focus_life/models/attendant_model.dart';
 import 'package:focus_life/utils/constant.dart';

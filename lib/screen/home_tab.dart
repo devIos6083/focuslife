@@ -1,34 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focus_life/models/attendant_model.dart';
+import 'package:focus_life/provider/attendence_provider.dart';
 import 'package:focus_life/provider/navigation_provider.dart';
 import 'package:focus_life/provider/user_provider.dart';
 import 'package:focus_life/utils/constant.dart';
-import 'package:focus_life/widgets/attendant_widget.dart';
+import 'package:focus_life/widgets/attence_widget.dart';
+import 'package:focus_life/widgets/attendant_calender_widget.dart'; // New import
 import 'package:focus_life/widgets/guide_banner.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:focus_life/widgets/user_info_card.dart';
 import 'package:focus_life/widgets/law_tip_widget.dart';
 import 'package:focus_life/widgets/quick_access_button.dart';
-
-// Provider for the attendance state
-final attendanceProvider =
-    StateNotifierProvider<AttendanceNotifier, AttendanceModel>((ref) {
-  return AttendanceNotifier();
-});
-
-class AttendanceNotifier extends StateNotifier<AttendanceModel> {
-  AttendanceNotifier() : super(AttendanceModel());
-
-  void checkAttendance() {
-    if (!state.isTodayChecked) {
-      state = state.copyWith(
-        count: state.count + 1,
-        isTodayChecked: true,
-      );
-    }
-  }
-}
 
 class HomeTabRiverpod extends ConsumerStatefulWidget {
   const HomeTabRiverpod({super.key});
@@ -40,6 +23,7 @@ class HomeTabRiverpod extends ConsumerStatefulWidget {
 class _HomeTabRiverpodState extends ConsumerState<HomeTabRiverpod>
     with SingleTickerProviderStateMixin {
   late AnimationController _checkAnimationController;
+  bool _showCalendar = false; // 캘린더 표시 여부
 
   @override
   void initState() {
@@ -56,32 +40,35 @@ class _HomeTabRiverpodState extends ConsumerState<HomeTabRiverpod>
     super.dispose();
   }
 
-  void _checkAttendance() {
-    // Update the attendance state using the provider
-    ref.read(attendanceProvider.notifier).checkAttendance();
+  void _checkAttendance() async {
+    // SQLite DB를 사용하여 출석 체크
+    final success =
+        await ref.read(attendanceProvider.notifier).checkAttendance();
 
-    // Animate the check mark
-    _checkAnimationController.forward(from: 0);
+    if (success) {
+      // Animate the check mark
+      _checkAnimationController.forward(from: 0);
 
-    // Show success message
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '오늘 하루도 화이팅하시기 바랍니다!',
-          style: GoogleFonts.sora(
-            fontSize: 14,
-            fontWeight: FontWeight.w500,
+      // Show success message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '오늘 하루도 화이팅하시기 바랍니다!',
+            style: GoogleFonts.sora(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
           ),
+          backgroundColor: AppColors.primary,
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+          margin: const EdgeInsets.all(16),
+          duration: const Duration(seconds: 3),
         ),
-        backgroundColor: AppColors.primary,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-        margin: const EdgeInsets.all(16),
-        duration: const Duration(seconds: 3),
-      ),
-    );
+      );
+    }
   }
 
   @override
@@ -89,7 +76,7 @@ class _HomeTabRiverpodState extends ConsumerState<HomeTabRiverpod>
     // Watch the user provider to get user data
     final user = ref.watch(userProvider);
     // Watch the attendance provider to get attendance state
-    final attendance = ref.watch(attendanceProvider);
+    final AttendanceModel attendance = ref.watch(attendanceProvider);
 
     return SingleChildScrollView(
       child: Padding(
@@ -108,6 +95,39 @@ class _HomeTabRiverpodState extends ConsumerState<HomeTabRiverpod>
               onCheckAttendance: _checkAttendance,
               animationController: _checkAnimationController,
             ),
+
+            const SizedBox(height: 16),
+
+            // 캘린더 표시 토글 버튼
+            Center(
+              child: TextButton.icon(
+                onPressed: () {
+                  setState(() {
+                    _showCalendar = !_showCalendar;
+                  });
+                },
+                icon: Icon(
+                  _showCalendar
+                      ? Icons.calendar_view_month
+                      : Icons.calendar_month_outlined,
+                  color: AppColors.primary,
+                ),
+                label: Text(
+                  _showCalendar ? '캘린더 숨기기' : '출석 캘린더 보기',
+                  style: GoogleFonts.sora(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: AppColors.primary,
+                  ),
+                ),
+              ),
+            ),
+
+            // 캘린더 위젯 (토글 상태에 따라 표시)
+            if (_showCalendar) ...[
+              const SizedBox(height: 20),
+              AttendanceCalendarWidget(),
+            ],
 
             const SizedBox(height: 30),
 

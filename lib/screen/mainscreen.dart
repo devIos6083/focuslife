@@ -1,16 +1,15 @@
+// lib/screen/main_screen.dart
 // ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focus_life/provider/navigation_provider.dart';
-import 'package:focus_life/provider/navigation_provider.dart';
 import 'package:focus_life/provider/user_provider.dart';
 import 'package:focus_life/screen/home_tab.dart';
 import 'package:focus_life/screen/messenger_chat.dart';
+import 'package:focus_life/screen/contacts_tab.dart'; // Import new contacts tab
 import 'package:focus_life/utils/constant.dart';
 import 'package:google_fonts/google_fonts.dart';
-
-import 'package:focus_life/screen/home_tab.dart';
 
 class MainScreen extends ConsumerWidget {
   const MainScreen({super.key});
@@ -21,11 +20,11 @@ class MainScreen extends ConsumerWidget {
     final navigationState = ref.watch(navigationProvider);
     final selectedIndex = navigationState.selectedIndex;
 
-    // 각 탭에 맞는 화면 리스트
+    // 각 탭에 맞는 화면 리스트 (연락처 탭 추가)
     final List<Widget> pages = [
       const HomeTabRiverpod(),
       const MessengerChatScreenRiverpod(),
-      const Center(child: Text('설정 화면')),
+      const ContactsTabRiverpod(), // 설정 대신 연락처 탭으로 변경
     ];
 
     return Scaffold(
@@ -91,8 +90,8 @@ class MainScreen extends ConsumerWidget {
                 label: '채팅',
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.settings),
-                label: '설정',
+                icon: Icon(Icons.contacts), // 아이콘 변경
+                label: '연락처', // 라벨 변경
               ),
             ],
             currentIndex: selectedIndex,
