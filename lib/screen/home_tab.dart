@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:focus_life/models/attendant_model.dart';
+import 'package:focus_life/models/lawtip_model.dart';
 import 'package:focus_life/provider/attendence_provider.dart';
+import 'package:focus_life/provider/lawtip_provider.dart';
 import 'package:focus_life/provider/navigation_provider.dart';
 import 'package:focus_life/provider/user_provider.dart';
 import 'package:focus_life/utils/constant.dart';
 import 'package:focus_life/widgets/attence_widget.dart';
 import 'package:focus_life/widgets/attendant_calender_widget.dart'; // New import
 import 'package:focus_life/widgets/guide_banner.dart';
+import 'package:focus_life/widgets/labol_guide.dart';
+import 'package:focus_life/widgets/salary_cacluater.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:focus_life/widgets/user_info_card.dart';
 import 'package:focus_life/widgets/law_tip_widget.dart';
@@ -132,17 +136,59 @@ class _HomeTabRiverpodState extends ConsumerState<HomeTabRiverpod>
             const SizedBox(height: 30),
 
             // 법률 정보 팁 섹션
-            LawTipWidget(
-              title: '오늘의 노동법 팁',
-              content:
-                  '근로기준법 제54조에 따라 사용자는 근로시간이 4시간인 경우 30분 이상, 8시간인 경우 1시간 이상의 휴게시간을 근로시간 도중에 주어야 합니다.',
-              onTapDetail: () {
-                // 자세히 보기 동작 구현
-              },
+
+// With this implementation:
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '오늘의 법률 정보',
+                      style: GoogleFonts.sora(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Consumer(
+                  builder: (context, ref, _) {
+                    final dailyTip = ref.watch(dailyLawTipProvider);
+                    return InteractiveLawTipWidget(
+                      tipId: dailyTip.id,
+                      onTapDetail: () {
+                        // Any additional actions on tip detail view
+                      },
+                    );
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
+
+// 급여 계산기 섹션 - 사용자 정의 헤더와 함께
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '급여 계산기',
+                  style: GoogleFonts.sora(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // showTitle을 false로 설정하여 중복 제목 방지
+                SalaryCalculatorWidget(showTitle: true),
+              ],
             ),
 
             const SizedBox(height: 30),
-
             // 빠른 액세스 버튼 섹션
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,7 +265,11 @@ class _HomeTabRiverpodState extends ConsumerState<HomeTabRiverpod>
               description: '근로 계약서 작성 시 꼭 확인해야 할 사항들을 알려드립니다.',
               icon: Icons.description,
               onTapGuide: () {
-                // 가이드 보기 동작 구현
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => LaborContractGuideScreen()),
+                );
               },
             ),
           ],
