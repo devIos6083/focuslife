@@ -283,7 +283,7 @@ class _SalaryCalculatorWidgetState
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '실수령액',
+                  '실수령액(월)',
                   style: GoogleFonts.sora(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,

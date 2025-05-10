@@ -22,8 +22,9 @@ class SalaryCalculationModel {
 
   // Calculate gross pay
   double get grossPay {
-    return (hourlyWage * hoursWorked) +
-        (hourlyWage * overtimeHours * overtimeRate);
+    return ((hourlyWage * hoursWorked) +
+            (hourlyWage * overtimeHours * overtimeRate)) *
+        4;
   }
 
   // Calculate deductions
