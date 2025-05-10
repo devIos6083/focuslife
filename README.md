@@ -46,13 +46,19 @@
 
 ### 앱 주요 화면
 
-| splash 뷰, userinfo 뷰 | 오늘의 법령 정보, 근여 계산기 | 빠른 이동 탭, 근로 계약서 작성법 탭 |
-|:---------------------------------------------:||:---------------------------------------------:||:---------------------------------------------:|
-| ![앱 화면 예시](https://github.com/user-attachments/assets/763859c5-afa3-4f45-9049-649ce6aa4e71) | ![앱 화면 예시](https://github.com/user-attachments/assets/42c5796c-ac87-4e60-91cc-25e00bc2107a) | ![앱 화면 예시](https://github.com/user-attachments/assets/9d6f75b0-20b6-499f-96e3-fefb10e486eb) |
+<table>
+ <tr>
+   <td align="center" width="33%"><strong>스플래시 & 사용자 정보 화면</strong><br><img src="https://github.com/user-attachments/assets/763859c5-afa3-4f45-9049-649ce6aa4e71" width="100%"></td>
+   <td align="center" width="33%"><strong>오늘의 법령 정보 & 급여 계산기</strong><br><img src="https://github.com/user-attachments/assets/42c5796c-ac87-4e60-91cc-25e00bc2107a" width="100%"></td>
+   <td align="center" width="33%"><strong>빠른 이동 & 근로 계약서 작성법</strong><br><img src="https://github.com/user-attachments/assets/9d6f75b0-20b6-499f-96e3-fefb10e486eb" width="100%"></td>
+ </tr>
+ <tr>
+   <td align="center" width="50%" colspan="2"><strong>챗봇 화면</strong><br><img src="https://github.com/user-attachments/assets/cc88bc1c-f389-479b-9860-0af97c5bcd5f" width="70%"></td>
+   <td align="center" width="50%"><strong>회사 연락처 화면</strong><br><img src="https://github.com/user-attachments/assets/42456086-4f1c-4318-b76d-9c93fcfb58cd" width="70%"></td>
+ </tr>
+</table>
 
-| 챗봇 뷰 | 회사 연락처 뷰 |
-|:---------------------------------------------:||:---------------------------------------------:|
-| ![앱 화면 예시](https://github.com/user-attachments/assets/cc88bc1c-f389-479b-9860-0af97c5bcd5f) | ![앱 화면 예시](https://github.com/user-attachments/assets/42456086-4f1c-4318-b76d-9c93fcfb58cd) | 
+---
 
 ---
 
