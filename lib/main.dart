@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:focus_life/provider/chat_provider.dart';
 import 'package:focus_life/screen/onboarding.dart';
 import 'package:focus_life/screen/splash.dart';
 import 'package:focus_life/provider/onboarding_provider.dart';

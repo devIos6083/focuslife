@@ -1,0 +1,19 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.example.focus_life.app-mergeDebugResources-39:/values-v18/values-v18.xml",
+            "map": [
+                {
+                    "source": "/Users/hongkyu-kang/.gradle/caches/8.9/transforms/cc3b262d49878af25db8c2e4c3f1094f/transformed/appcompat-1.1.0/res/values-v18/values-v18.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "48",
+                        "endOffsets": "99"
+                    }
+                }
+            ]
+        }
+    ]
+}

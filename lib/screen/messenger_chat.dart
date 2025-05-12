@@ -1,120 +1,48 @@
 // ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:focus_life/utils/constant.dart';
+import 'package:focus_life/provider/chat_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// Provider for messages
-final messagesProvider =
-    StateNotifierProvider<MessagesNotifier, List<Message>>((ref) {
-  return MessagesNotifier();
-});
-
-// StateNotifier for managing messages
-class MessagesNotifier extends StateNotifier<List<Message>> {
-  MessagesNotifier()
-      : super([
-          Message(
-              text: "안녕하세요! 무엇을 도와드릴까요?",
-              isMe: false,
-              timestamp: DateTime.now().subtract(const Duration(minutes: 6))),
-          Message(
-              text: "오늘 출근 기록을 확인하고 싶어요.",
-              isMe: true,
-              timestamp: DateTime.now().subtract(const Duration(minutes: 5))),
-          Message(
-              text: "네, 오늘 출근 기록이 9시 30분에 확인되었습니다.",
-              isMe: false,
-              timestamp: DateTime.now().subtract(const Duration(minutes: 4))),
-          Message(
-              text: "혹시 근무 시간 계산도 해줄 수 있나요?",
-              isMe: true,
-              timestamp: DateTime.now().subtract(const Duration(minutes: 3))),
-          Message(
-              text: "네, 현재까지 총 근무 시간은 4시간 15분입니다. (점심시간 제외)",
-              isMe: false,
-              timestamp: DateTime.now().subtract(const Duration(minutes: 2))),
-          Message(
-              text: "오후 6시까지 근무하면 총 몇 시간인가요?",
-              isMe: true,
-              timestamp: DateTime.now().subtract(const Duration(minutes: 1))),
-          Message(
-              text: "예상 근무 시간은 8시간 30분입니다. 연장 근무 여부도 확인할까요?",
-              isMe: false,
-              timestamp: DateTime.now())
-        ]);
-
-  void addMessage(String text, bool isMe) {
-    state = [
-      ...state,
-      Message(
-        text: text,
-        isMe: isMe,
-        timestamp: DateTime.now(),
-      ),
-    ];
-  }
-}
-
-// Provider for attachment options visibility
-final attachmentVisibilityProvider = StateProvider<bool>((ref) => false);
-
 class MessengerChatScreenRiverpod extends ConsumerWidget {
-  const MessengerChatScreenRiverpod({
-    super.key,
-  });
+  const MessengerChatScreenRiverpod({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the messages provider
-    final messages = ref.watch(messagesProvider);
-    // Watch the attachment visibility provider
-    final showAttachmentOptions = ref.watch(attachmentVisibilityProvider);
-    // Create a TextEditingController for the message input
+    // 채팅 상태 구독
+    final chatState = ref.watch(chatProvider);
+    // TextEditingController 생성
     final TextEditingController messageController = TextEditingController();
 
-    // Function to send a message
+    // 메시지 전송 함수
     void sendMessage() {
       if (messageController.text.trim().isNotEmpty) {
-        // Add the user's message
-        ref.read(messagesProvider.notifier).addMessage(
-              messageController.text,
-              true,
-            );
+        ref.read(chatProvider.notifier).sendMessage(messageController.text);
         messageController.clear();
-
-        // Simulate a bot response
-        Future.delayed(const Duration(seconds: 1), () {
-          ref.read(messagesProvider.notifier).addMessage(
-                "네, 근무 시간은 현재 5시간 30분입니다.",
-                false,
-              );
-        });
       }
     }
 
-    // Function to toggle attachment options
+    // 첨부 옵션 토글 함수
     void toggleAttachmentOptions() {
-      ref.read(attachmentVisibilityProvider.notifier).state =
-          !showAttachmentOptions;
+      ref.read(chatProvider.notifier).toggleAttachmentOptions();
     }
 
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70), // 🔹 앱바 높이 조정
+        preferredSize: const Size.fromHeight(70),
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white, // 🔹 앱바 배경색
+            color: Colors.white,
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(15),
               bottomRight: Radius.circular(15),
-            ), // 🔹 하단을 둥글게
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withOpacity(0.05),
                 blurRadius: 10,
-                offset: const Offset(0, 7), // 🔹 살짝 떠 있는 느낌의 그림자
+                offset: const Offset(0, 7),
               ),
             ],
           ),
@@ -124,7 +52,7 @@ class MessengerChatScreenRiverpod extends ConsumerWidget {
             leading: Padding(
               padding: const EdgeInsets.all(8.0),
               child: CircleAvatar(
-                backgroundColor: Colors.grey[200], // 🔹 테두리 효과
+                backgroundColor: Colors.grey[200],
                 radius: 20,
                 child: ClipOval(
                   child: Image.asset(
@@ -138,8 +66,8 @@ class MessengerChatScreenRiverpod extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '챗봇 상담',
-                  style: GoogleFonts.sora(
+                  'KOSHA 챗봇',
+                  style: GoogleFonts.notoSans(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                     color: Colors.black,
@@ -147,8 +75,8 @@ class MessengerChatScreenRiverpod extends ConsumerWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'AI 상담 도우미', // 🔹 서브 타이틀 추가
-                  style: GoogleFonts.sora(
+                  '산업안전보건 가이드 도우미',
+                  style: GoogleFonts.notoSans(
                     fontSize: 12,
                     fontWeight: FontWeight.w400,
                     color: Colors.grey,
@@ -166,11 +94,12 @@ class MessengerChatScreenRiverpod extends ConsumerWidget {
             child: ListView.builder(
               reverse: true,
               padding: const EdgeInsets.all(16),
-              itemCount: messages.length,
+              itemCount: chatState.messages.length,
               itemBuilder: (context, index) {
-                final message = messages[messages.length - 1 - index];
-                final previousMessage = index < messages.length - 1
-                    ? messages[messages.length - index - 2]
+                final message =
+                    chatState.messages[chatState.messages.length - 1 - index];
+                final previousMessage = index < chatState.messages.length - 1
+                    ? chatState.messages[chatState.messages.length - index - 2]
                     : null;
 
                 return _buildMessageBubble(message, previousMessage);
@@ -178,8 +107,57 @@ class MessengerChatScreenRiverpod extends ConsumerWidget {
             ),
           ),
 
+          // 로딩 인디케이터
+          if (chatState.isLoading)
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    '응답을 기다리는 중...',
+                    style: GoogleFonts.notoSans(
+                      fontSize: 14,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+          // 에러 메시지
+          if (chatState.error != null)
+            Container(
+              padding: const EdgeInsets.all(8),
+              color: Colors.red[50],
+              child: Row(
+                children: [
+                  Icon(Icons.error_outline, color: Colors.red[700]),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      '오류가 발생했습니다. 다시 시도해주세요.',
+                      style: TextStyle(color: Colors.red[700]),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () {
+                      ref.read(chatProvider.notifier).clearError();
+                    },
+                  ),
+                ],
+              ),
+            ),
+
           // 첨부 옵션 영역
-          if (showAttachmentOptions)
+          if (chatState.showAttachmentOptions)
             Container(
               padding: const EdgeInsets.symmetric(vertical: 8),
               color: Colors.grey[100],
@@ -213,7 +191,9 @@ class MessengerChatScreenRiverpod extends ConsumerWidget {
               children: [
                 IconButton(
                   icon: Icon(
-                    showAttachmentOptions ? Icons.close : Icons.chevron_right,
+                    chatState.showAttachmentOptions
+                        ? Icons.close
+                        : Icons.chevron_right,
                     color: Colors.blue,
                   ),
                   onPressed: toggleAttachmentOptions,
@@ -223,7 +203,7 @@ class MessengerChatScreenRiverpod extends ConsumerWidget {
                     controller: messageController,
                     decoration: InputDecoration(
                       hintText: "메시지를 입력하세요...",
-                      hintStyle: GoogleFonts.sora(
+                      hintStyle: GoogleFonts.notoSans(
                         fontSize: 14,
                         color: Colors.grey[400],
                       ),
@@ -236,20 +216,17 @@ class MessengerChatScreenRiverpod extends ConsumerWidget {
                       contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16, vertical: 8),
                     ),
+                    onSubmitted: (_) => sendMessage(),
+                    enabled: !chatState.isLoading,
                   ),
                 ),
                 IconButton(
-                  onPressed: sendMessage,
-                  icon: const Icon(
+                  onPressed: chatState.isLoading ? null : sendMessage,
+                  icon: Icon(
                     Icons.send_outlined,
-                    color: Colors.blueAccent,
+                    color:
+                        chatState.isLoading ? Colors.grey : Colors.blueAccent,
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.thumb_up, color: Colors.blue),
-                  onPressed: () {
-                    ref.read(messagesProvider.notifier).addMessage("👍", true);
-                  },
                 ),
               ],
             ),
@@ -271,7 +248,7 @@ class MessengerChatScreenRiverpod extends ConsumerWidget {
         const SizedBox(height: 4),
         Text(
           label,
-          style: GoogleFonts.sora(
+          style: GoogleFonts.notoSans(
             fontSize: 12,
             color: Colors.black54,
           ),
@@ -288,22 +265,21 @@ class MessengerChatScreenRiverpod extends ConsumerWidget {
       crossAxisAlignment:
           message.isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
-        // 🔹 다른 사람이 보낸 메시지라면 더 큰 간격 추가
         if (isDifferentSender)
           const SizedBox(height: 16)
         else
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
 
         Row(
           mainAxisAlignment:
               message.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            // 🔹 챗봇 메시지인 경우 (왼쪽에 챗봇 이미지 추가)
+            // 챗봇 메시지인 경우
             if (!message.isMe) ...[
               CircleAvatar(
                 radius: 18,
-                backgroundColor: Colors.grey[200], // 🔹 테두리 효과
+                backgroundColor: Colors.grey[200],
                 child: ClipOval(
                   child: Image.asset(
                     'img/chat_bot.png',
@@ -314,7 +290,7 @@ class MessengerChatScreenRiverpod extends ConsumerWidget {
               const SizedBox(width: 8),
             ],
 
-            // 🔹 메시지 말풍선
+            // 메시지 말풍선
             Flexible(
               child: Container(
                 padding:
@@ -332,21 +308,88 @@ class MessengerChatScreenRiverpod extends ConsumerWidget {
                         : const Radius.circular(16),
                   ),
                 ),
-                child: Text(
-                  message.text,
-                  style: GoogleFonts.sora(
-                    fontSize: 14,
-                    color: message.isMe ? Colors.white : Colors.black,
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      message.text,
+                      style: GoogleFonts.notoSans(
+                        fontSize: 14,
+                        color: message.isMe ? Colors.white : Colors.black,
+                      ),
+                    ),
+
+                    // 참고자료가 있는 경우 표시 (죄송합니다로 시작하지 않는 경우만)
+                    if (message.references != null &&
+                        message.references!.isNotEmpty &&
+                        !message.text.startsWith('죄송합니다')) ...[
+                      const SizedBox(height: 8),
+                      Container(
+                        margin: const EdgeInsets.only(top: 8),
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: message.isMe
+                              ? Colors.blue[300]
+                              : Colors.grey[100],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '📚 참고자료',
+                              style: GoogleFonts.notoSans(
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                color: message.isMe
+                                    ? Colors.white
+                                    : Colors.black87,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            ...message.references!.map((ref) => Padding(
+                                  padding: const EdgeInsets.only(top: 2),
+                                  child: Text(
+                                    '• ${ref.content.length > 50 ? '${ref.content.substring(0, 50)}...' : ref.content}',
+                                    style: GoogleFonts.notoSans(
+                                      fontSize: 11,
+                                      color: message.isMe
+                                          ? Colors.white70
+                                          : Colors.black54,
+                                    ),
+                                  ),
+                                )),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
               ),
             ),
 
-            // 🔹 사용자 메시지 오른쪽 여백 추가
             if (message.isMe) const SizedBox(width: 8),
           ],
         ),
+
+        // 시간 표시
+        Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            _formatTime(message.timestamp),
+            style: GoogleFonts.notoSans(
+              fontSize: 10,
+              color: Colors.grey[500],
+            ),
+          ),
+        ),
       ],
     );
+  }
+
+  String _formatTime(DateTime timestamp) {
+    final hour = timestamp.hour.toString().padLeft(2, '0');
+    final minute = timestamp.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
   }
 }

@@ -8,15 +8,15 @@ plugins {
 android {
     namespace = "com.example.focus_life"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+       sourceCompatibility JavaVersion.VERSION_11  // 또는 VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_11  // 또는 VERSION_1_8
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+     kotlinOptions {
+        jvmTarget = '11'  // 또는 '1.8' (위 JavaVersion과 일치시켜야 함)
     }
 
     defaultConfig {

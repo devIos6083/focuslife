@@ -38,6 +38,7 @@
 | **2025. 4.21** | 데이터 저장 및 관리 최적화<br>ContactScreen 구현 및 필터링 기능 개선<br>출석 캘린더 기능 향상             |
 | **2025. 4.23** | 홈 화면 개선:<br> - 오늘의 법률 정보 UI 개선<br> - 급여 계산기 UI 추가<br> - 근로 계약서 가이드 디테일 뷰 추가 |
 | **2025. 5.10** | **RAG 기반 백엔드 최적화:**<br>- FastAPI 서버 구축 및 Postman 테스트 완료<br>- KOSHA Guide PDF 문서 추출 및 벡터화<br>- 법조항 자동 추출 기능 구현<br>- TTS 개선을 위한 방안 연구 |
+| **2025. 5.12** | **Flutter-Python API 연동 완성:**<br>- Flutter 앱에서 Python FastAPI 서버와 실시간 통신 구현<br>- 산업안전보건 관련 질문 시 정확한 답변과 참고자료 제공<br>- 관련 없는 질문은 적절히 필터링하여 응답<br>- Android Gradle Plugin 버전 호환성 문제 해결<br>- iOS/Android 플랫폼별 네트워크 설정 최적화<br>- UTF-8 인코딩 처리로 한글 깨짐 문제 해결 |
 
 
 ---
@@ -47,18 +48,16 @@
 ### 앱 주요 화면
 
 <table>
- <tr>
-   <td align="center" width="33%"><strong>스플래시 & 사용자 정보 화면</strong><br><img src="https://github.com/user-attachments/assets/763859c5-afa3-4f45-9049-649ce6aa4e71" width="100%"></td>
-   <td align="center" width="33%"><strong>오늘의 법령 정보 & 급여 계산기</strong><br><img src="https://github.com/user-attachments/assets/42c5796c-ac87-4e60-91cc-25e00bc2107a" width="100%"></td>
-   <td align="center" width="33%"><strong>빠른 이동 & 근로 계약서 작성법</strong><br><img src="https://github.com/user-attachments/assets/9d6f75b0-20b6-499f-96e3-fefb10e486eb" width="100%"></td>
- </tr>
- <tr>
-   <td align="center" width="50%" colspan="2"><strong>챗봇 화면</strong><br><img src="https://github.com/user-attachments/assets/cc88bc1c-f389-479b-9860-0af97c5bcd5f" width="70%"></td>
-   <td align="center" width="50%"><strong>회사 연락처 화면</strong><br><img src="https://github.com/user-attachments/assets/42456086-4f1c-4318-b76d-9c93fcfb58cd" width="70%"></td>
- </tr>
+<tr>
+  <td align="center" width="33%"><strong>스플래시 & 사용자 정보 화면</strong><br><img src="https://github.com/user-attachments/assets/763859c5-afa3-4f45-9049-649ce6aa4e71" width="100%"></td>
+  <td align="center" width="33%"><strong>오늘의 법령 정보 & 급여 계산기</strong><br><img src="https://github.com/user-attachments/assets/42c5796c-ac87-4e60-91cc-25e00bc2107a" width="100%"></td>
+  <td align="center" width="33%"><strong>빠른 이동 & 근로 계약서 작성법</strong><br><img src="https://github.com/user-attachments/assets/9d6f75b0-20b6-499f-96e3-fefb10e486eb" width="100%"></td>
+</tr>
+<tr>
+  <td align="center" width="50%" colspan="2"><strong>챗봇 화면</strong><br><img src="https://github.com/user-attachments/assets/ca3d6bc9-08d0-4d16-bf1f-3a3db2edc03ef" width="70%"></td>
+  <td align="center" width="50%"><strong>회사 연락처 화면</strong><br><img src="https://github.com/user-attachments/assets/42456086-4f1c-4318-b76d-9c93fcfb58cd" width="70%"></td>
+</tr>
 </table>
-
----
 
 ---
 
@@ -83,6 +82,34 @@
 ### 🔹 문제 5: PDF 문서에서 테이블 데이터 추출 어려움
 - **원인:** PDF 구조가 복잡하여 단순 텍스트 추출로는 테이블 구조 손실
 - **해결:** TableFormer 모델과 docling 라이브러리를 활용해 테이블 구조 보존하며 추출
+
+### 🔹 문제 6: Android Gradle Plugin 버전 호환성 문제
+- **원인:** AGP 8.3.0과 Java 21 사이의 버전 충돌, Gradle 버전 불일치
+- **해결:** 
+ - AGP를 8.1.4로 다운그레이드
+ - Gradle을 8.2로 설정
+ - Java 17로 변경하여 안정적인 빌드 환경 구성
+
+### 🔹 문제 7: macOS 디스크 공간 부족으로 인한 빌드 실패
+- **원인:** Xcode DerivedData와 CoreSimulator 캐시가 대량의 공간 차지
+- **해결:** 
+ - Xcode 캐시 및 불필요한 시뮬레이터 데이터 정리
+ - Flutter 프로젝트 빌드 캐시 삭제
+ - 10GB 이상의 여유 공간 확보
+
+### 🔹 문제 8: Flutter-Python API 통신 시 한글 인코딩 문제
+- **원인:** JSON 응답의 UTF-8 인코딩이 제대로 처리되지 않음
+- **해결:** 
+ - HTTP 헤더에 `charset=utf-8` 명시
+ - `response.bodyBytes`를 사용하여 명시적으로 UTF-8 디코딩
+ - Google Fonts를 `notoSans`로 변경하여 한글 지원
+
+### 🔹 문제 9: iOS 네트워크 보안 정책으로 인한 API 호출 차단
+- **원인:** iOS의 App Transport Security(ATS) 정책으로 HTTP 통신 차단
+- **해결:** 
+ - Info.plist에 `NSAppTransportSecurity` 설정 추가
+ - localhost에 대한 예외 처리 설정
+ - 개발 환경에서만 HTTP 통신 허용
 
 ---
 
@@ -126,6 +153,17 @@
 - 자연스러운 한국어 음성 합성을 위한 최적 접근법 모색
 - 서버 의존성 최소화를 위한 하이브리드 TTS 아키텍처 연구
 
+### ✅ 9. Cross-Platform 개발 환경 구축 및 디버깅
+- Android Gradle Plugin과 Java 버전 호환성 이슈 해결 경험
+- iOS/Android 플랫폼별 네트워크 설정 차이점 이해
+- UTF-8 인코딩 및 다국어 지원을 위한 설정 방법 습득
+- 개발 도구 간 의존성 관리 및 버전 충돌 해결 능력 향상
+
+### ✅ 10. 시스템 자원 관리 및 최적화
+- macOS 시스템 캐시 관리 방법 학습
+- 개발 환경에서의 디스크 공간 효율적 활용법 습득
+- 대용량 빌드 파일 및 캐시 정리 자동화 방안 연구
+
 ---
 
 ## 📌 느낀 점
@@ -135,6 +173,10 @@
 - 상태 관리와 데이터 저장을 구조화하면서 **코드가 훨씬 명확하고 확장 가능해졌음**  
 - "작은 UI 개선 하나가 전체 UX를 크게 향상시킬 수 있다"는 점을 체감함
 - API 서버 구축 과정에서 **각 컴포넌트의 역할을 명확히 분리하는 것**이 유지보수성과 확장성에 큰 영향을 미친다는 것을 깨달음
+- **패키지 버전 관리와 호환성 체크의 중요성**을 절실히 느낌 - 하나의 버전 충돌이 전체 프로젝트를 마비시킬 수 있음
+- **한 시스템에서 여러 개발 환경을 운영할 때의 자원 관리**가 얼마나 중요한지 경험함
+- 문자 인코딩과 플랫폼별 네트워크 정책 등 **크로스 플랫폼 개발의 세부적인 차이점**들을 이해하게 됨
+
 ---
 
 ## 📌 향후 계획
@@ -144,5 +186,7 @@
 - **나의 노동 생활 분석 탭 추가:** 출석률, 활동 통계, 내 질문 모음 등 개인화된 데이터 제공  
 - **계약서 자동 작성 기능 추가:** 사용자 정보 기반으로 PDF 근로계약서 생성 및 저장  
 - **앱 테스트 및 배포:** 기능 안정화 후 테스트 진행 → 사용자 피드백 기반 개선 및 배포
+- **서버 배포:** 로컬 개발 환경에서 클라우드 서버로 마이그레이션
+- **CI/CD 파이프라인 구축:** 자동화된 빌드 및 배포 시스템 구축
 
 ---
