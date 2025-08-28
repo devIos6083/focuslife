@@ -49,13 +49,14 @@
 
 <table>
 <tr>
-  <td align="center" width="33%"><strong>스플래시 & 사용자 정보 화면</strong><br><img src="https://github.com/user-attachments/assets/763859c5-afa3-4f45-9049-649ce6aa4e71" width="100%"></td>
-  <td align="center" width="33%"><strong>오늘의 법령 정보 & 급여 계산기</strong><br><img src="https://github.com/user-attachments/assets/42c5796c-ac87-4e60-91cc-25e00bc2107a" width="100%"></td>
-  <td align="center" width="33%"><strong>빠른 이동 & 근로 계약서 작성법</strong><br><img src="https://github.com/user-attachments/assets/9d6f75b0-20b6-499f-96e3-fefb10e486eb" width="100%"></td>
+  <td align="center" width="33.33%"><strong>스플래시 & 사용자 정보 화면</strong><br><img src="https://github.com/user-attachments/assets/763859c5-afa3-4f45-9049-649ce6aa4e71" width="100%"></td>
+  <td align="center" width="33.33%"><strong>오늘의 법령 정보 & 급여 계산기</strong><br><img src="https://github.com/user-attachments/assets/42c5796c-ac87-4e60-91cc-25e00bc2107a" width="100%"></td>
+  <td align="center" width="33.33%"><strong>빠른 이동 & 근로 계약서 작성법</strong><br><img src="https://github.com/user-attachments/assets/9d6f75b0-20b6-499f-96e3-fefb10e486eb" width="100%"></td>
 </tr>
 <tr>
-  <td align="center" width="50%" colspan="2"><strong>챗봇 화면</strong><br><img src="https://github.com/user-attachments/assets/ca3d6bc9-08d0-4d16-bf1f-3a3db2edc03ef" width="70%"></td>
-  <td align="center" width="50%"><strong>회사 연락처 화면</strong><br><img src="https://github.com/user-attachments/assets/42456086-4f1c-4318-b76d-9c93fcfb58cd" width="70%"></td>
+  <td align="center" width="33.33%"><strong>챗봇 화면</strong><br><img src="https://github.com/user-attachments/assets/ca3d6bc9-08d0-4d16-bf1f-3a3db2edc03ef" width="100%"></td>
+  <td align="center" width="33.33%"><strong>회사 연락처 화면</strong><br><img src="https://github.com/user-attachments/assets/42456086-4f1c-4318-b76d-9c93fcfb58cd" width="100%"></td>
+  <td align="center" width="33.33%"></td>
 </tr>
 </table>
 
